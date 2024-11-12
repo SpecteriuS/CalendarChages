@@ -18,4 +18,4 @@ def create_appointment_card(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Appointment)
 def save_appointment_card(sender, instance, **kwargs):
-    instance.save()
+    instance.appointmentcard.save()

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Appointment
+from .models import Appointment, AppointmentCard
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -12,6 +12,25 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
+        fields = (
+            "id",
+            "title",
+            "start",
+            "end",
+            "classNames",
+            "description",
+        )
+
+
+class AppointmentCardSerializer(serializers.ModelSerializer):
+
+    title = serializers.CharField(source="name")
+    start = serializers.DateTimeField(source="start_date")
+    end = serializers.DateTimeField(source="end_date")
+    classNames = serializers.CharField(source="status")
+
+    class Meta:
+        model = AppointmentCard
         fields = (
             "id",
             "title",

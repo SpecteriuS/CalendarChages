@@ -34,7 +34,8 @@ export default function MyModal({ open, handleClose, myDate, formData, handleCha
       title: formData.title,
       classNames: formData.classNames,
       start: StartDate,
-      end: EndDate
+      end: EndDate,
+      description: formData.description
     })
       .then((res) => {
         console.log(res)
@@ -93,6 +94,15 @@ export default function MyModal({ open, handleClose, myDate, formData, handleCha
                   label={"End Date"}
                   name={"end"}
                   value={formData.end}
+                  onChange={handleChange}
+                />
+              </Box>
+
+              <Box sx={{ marginBottom: '20px' }}>
+                <MytextForm
+                  label={"Description"}
+                  name={"description"}
+                  value={formData.description}
                   onChange={handleChange}
                 />
               </Box>

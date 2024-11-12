@@ -79,7 +79,7 @@ const Calendar = () => {
   const [loading, setLoading] = useState(true)
 
   const GetData = () => {
-    AxiosInstance.get(`appointment/`).then((res) => {
+    AxiosInstance.get(`appointment_card/`).then((res) => {
       setEvents(res.data)
       setStatusOptions([...new Set(res.data.map((event) => event.classNames))])
       setSelectedStatus([...new Set(res.data.map((event) => event.classNames))])
