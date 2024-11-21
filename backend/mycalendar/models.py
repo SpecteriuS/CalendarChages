@@ -9,7 +9,27 @@ STATUSES = [
 ]
 
 
+class Direction(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(max_length=500, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Project(models.Model):
+    direction = models.ForeignKey(Direction, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(max_length=500, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Appointment(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()

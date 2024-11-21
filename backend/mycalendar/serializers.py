@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Appointment, AppointmentCard
+from .models import Direction, Project, Appointment, AppointmentCard
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -12,14 +12,15 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        fields = (
+        fields = [
             "id",
+            "project",
             "title",
             "start",
             "end",
             "classNames",
             "description",
-        )
+        ]
 
 
 class AppointmentCardSerializer(serializers.ModelSerializer):
@@ -31,10 +32,26 @@ class AppointmentCardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppointmentCard
-        fields = (
+        fields = [
             "id",
             "title",
             "start",
             "end",
             "classNames",
-        )
+        ]
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    appointments = AppointmentSerializer(source="appointment_set", many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ["id", "direction", "name", "slug", "description", "appointments"]
+
+
+class DirectionSerializer(serializers.ModelSerializer):
+    projects = ProjectSerializer(source="project_set", many=True, read_only=True)
+
+    class Meta:
+        model = Direction
+        fields = ["id", "name", "slug", "description", "projects"]

@@ -1,11 +1,33 @@
 from django.contrib import admin
 
-from .models import Appointment, AppointmentCard, AppointmentFile
+from .models import Direction, Project, Appointment, AppointmentCard, AppointmentFile
+
+
+class DirectionAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "name",
+        "slug",
+        "description",
+    ]
+    prepopulated_fields = {"slug": ("name",)}
+
+
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "direction",
+        "name",
+        "slug",
+        "description",
+    ]
+    prepopulated_fields = {"slug": ("name",)}
 
 
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = [
         "id",
+        "project",
         "name",
         "start_date",
         "end_date",
@@ -35,6 +57,8 @@ class AppointmentFileAdmin(admin.ModelAdmin):
     ]
 
 
+admin.site.register(Direction, DirectionAdmin)
+admin.site.register(Project, ProjectAdmin)
 admin.site.register(Appointment, AppointmentAdmin)
 admin.site.register(AppointmentCard, AppointmentCardAdmin)
 admin.site.register(AppointmentFile, AppointmentFileAdmin)
