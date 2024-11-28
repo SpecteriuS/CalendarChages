@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import MyDatePickerForm from '../forms/createforms/MyDatePickerForm';
@@ -22,25 +21,42 @@ const style = {
   p: 4,
 };
 
-export default function MyModal({ open, handleClose, myDate, formData, handleChange }) {
+export default function MyModal({ open, handleClose, myDate, formData, handleChange, method = "POST" }) {
 
   const submission = (event) => {
     event.preventDefault()
 
     const StartDate = dayjs(formData.start["$d"])
     const EndDate = dayjs(formData.end["$d"])
-
-    AxiosInstance.post(`appointment/`, {
-      title: formData.title,
-      classNames: formData.classNames,
-      start: StartDate,
-      end: EndDate,
-      description: formData.description
-    })
-      .then((res) => {
-        console.log(res)
-        window.location.reload()
+    if (method === "PUT") {
+      AxiosInstance.put(`appointment/${myDate}/`, {
+        title: formData.title,
+        classNames: formData.classNames,
+        start: StartDate,
+        end: EndDate,
+        description: formData.description,
+        project: formData.project
       })
+        .then((res) => {
+          console.log(res)
+          window.location.reload()
+        })
+    }
+
+    else {
+      AxiosInstance.post(`appointment/`, {
+        title: formData.title,
+        classNames: formData.classNames,
+        start: StartDate,
+        end: EndDate,
+        description: formData.description,
+        project: formData.project
+      })
+        .then((res) => {
+          console.log(res)
+          window.location.reload()
+        })
+    }
 
   }
 
@@ -103,6 +119,15 @@ export default function MyModal({ open, handleClose, myDate, formData, handleCha
                   label={"Description"}
                   name={"description"}
                   value={formData.description}
+                  onChange={handleChange}
+                />
+              </Box>
+
+              <Box sx={{ marginBottom: '20px' }}>
+                <MytextForm
+                  label={"Project"}
+                  name={"project"}
+                  value={formData.project}
                   onChange={handleChange}
                 />
               </Box>

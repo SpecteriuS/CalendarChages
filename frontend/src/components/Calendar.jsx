@@ -15,7 +15,9 @@ const Calendar = () => {
     title: '',
     classNames: '',
     start: '',
-    end: ''
+    end: '',
+    description: '',
+    project: 1, // Поменять залупу-лупу
   })
 
   console.log('data from my form', formData)
@@ -38,7 +40,9 @@ const Calendar = () => {
       title: '',
       classNames: '',
       start: dayjs(info.dateStr),
-      end: dayjs(info.dateStr)
+      end: dayjs(info.dateStr),
+      description: '',
+      project: 1, // Поменять залупу-лупу
     })
   };
 
@@ -48,7 +52,9 @@ const Calendar = () => {
       title: '',
       classNames: '',
       start: '',
-      end: ''
+      end: '',
+      description: '',
+      project: 1, // Поменять залупу-лупу
     })
 
   };
