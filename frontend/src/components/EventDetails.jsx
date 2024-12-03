@@ -1,11 +1,14 @@
 import { React, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import AccessibleIcon from '@mui/icons-material/Accessible';
 import AxiosInstance from './AxiosInstance'
 import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
 import MyActionButton from './MyActionButton';
+import ProfileModal from './utils/ProfileModal';
 import MyModal from './utils/Modal'
-
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 const EventDetails = () => {
 
@@ -16,9 +19,9 @@ const EventDetails = () => {
         end: '',
         description: '',
         project: 1, // Поменять залупу-лупу
+        contacts: 1,
+        contact_name: '',
     })
-
-    console.log('data formshit', formData)
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -37,9 +40,12 @@ const EventDetails = () => {
             start: dayjs(info.start),
             end: dayjs(info.end),
             description: info.description,
-            project: info.project
+            project: info.project,
+            contacts: info.contacts,
+            contact_name: info.contact_name,
         })
     };
+
     const handleClose = () => {
         setOpen(false)
         setFormData({
@@ -49,20 +55,28 @@ const EventDetails = () => {
             end: '',
             description: '',
             project: 1, // Поменять залупу-лупу
+            contacts: 1,
+            contact_name: '',
         })
-
     };
+
     const MyParam = useParams()
     const MyId = MyParam.id
 
     const [loading, setLoading] = useState(true)
-    const [eventos, setEventos] = useState(true)
+    const [events, setEvents] = useState(true)
+    const [profile, setProfile] = useState(true)
+    const [openProfile, setOpenProfile] = useState(false)
 
+    const GetProfile = (profileId) => {
+        AxiosInstance.get(`profile/${profileId}`).then((res) => {
+            setProfile(res.data)
+        })
+    }
     const GetData = () => {
         AxiosInstance.get(`appointment/${MyId}`).then((res) => {
-            setEventos(res.data)
+            setEvents(res.data)
             setLoading(false)
-            console.log(res.data)
         })
 
     }
@@ -77,7 +91,6 @@ const EventDetails = () => {
     useEffect(() => {
         GetData();
     }, [])
-
 
 
     return (
@@ -95,55 +108,76 @@ const EventDetails = () => {
 
                     <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
                         <Box sx={{ fontWeight: 'bold' }}>Name: </Box>
-                        <Box sx={{ marginLeft: '10px' }}>{eventos.title}</Box>
+                        <Box sx={{ marginLeft: '10px' }}>{events.title}</Box>
                     </Box>
 
                     <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
                         <Box sx={{ fontWeight: 'bold' }}>Status: </Box>
-                        <Box sx={{ marginLeft: '10px' }}>{eventos.classNames}</Box>
+                        <Box sx={{ marginLeft: '10px' }}>{events.classNames}</Box>
                     </Box>
 
                     <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
                         <Box sx={{ fontWeight: 'bold' }}>Start date: </Box>
-                        <Box sx={{ marginLeft: '10px' }}>{dayjs(eventos.start).format('MMMM D, YYYY HH:mm')}</Box>
+                        <Box sx={{ marginLeft: '10px' }}>{dayjs(events.start).format('MMMM D, YYYY HH:mm')}</Box>
                     </Box>
 
                     <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
                         <Box sx={{ fontWeight: 'bold' }}>End date: </Box>
-                        <Box sx={{ marginLeft: '10px' }}>{dayjs(eventos.end).format('MMMM D, YYYY HH:mm')}</Box>
+                        <Box sx={{ marginLeft: '10px' }}>{dayjs(events.end).format('MMMM D, YYYY HH:mm')}</Box>
                     </Box>
 
                     <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
                         <Box sx={{ fontWeight: 'bold' }}>Description: </Box>
-                        <Box sx={{ marginLeft: '10px' }}>{eventos.description}</Box>
+                        <Box sx={{ marginLeft: '10px' }}>{events.description}</Box>
                     </Box>
 
+                    <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
+                        <Box sx={{ fontWeight: 'bold', marginTop: "5px" }}>Contact: </Box>
+                        <Stack marginLeft="5px" direction="row" spacing={1}>
+                            {events.contacts.map((contact, i) => (
+                                <Chip icon={<AccessibleIcon />} label={events.contact_name[i]} variant="outlined"
+                                    onClick={() => {
+                                        GetProfile(contact);
+                                        setOpenProfile(true);
+                                    }} />
+                            ))}
+                        </Stack>
+
+                    </Box>
 
                     <Box sx={{ marginBottom: '20px' }}>
-                        <MyActionButton
-                            label={"Edit"}
-                            type={"button"}
-                            onclick={() => {
-                                handleOpen(eventos);
-                            }}
+                        <Stack marginLeft="5px" direction="row" spacing={1}>
+                            <MyActionButton
+                                label={"Edit"}
+                                type={"button"}
+                                onclick={() => {
+                                    handleOpen(events);
+                                }}
 
-                        />
+                            />
+                            <MyActionButton
+                                label={"Delete"}
+                                type={"submit"}
+                                onclick={() => {
+                                    DeleteData();
+                                }}
+                            />
+                        </Stack>
 
                     </Box>
-                    <Box sx={{ marginBottom: '20px' }}>
-                        <MyActionButton
-                            label={"Delete"}
-                            type={"submit"}
-                            onclick={() => {
-                                DeleteData();
+                    {openProfile ?
+                        <ProfileModal
+                            open={openProfile}
+                            handleClose={() => {
+                                setOpenProfile(false);
                             }}
-                        />
-
-                    </Box>
+                            profile={profile} />
+                        : <></>
+                    }
                 </>
 
             }
-        </div>
+        </div >
     )
 }
 

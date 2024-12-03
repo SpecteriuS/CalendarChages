@@ -9,6 +9,10 @@ class AppointmentSerializer(serializers.ModelSerializer):
     start = serializers.DateTimeField(source="start_date")
     end = serializers.DateTimeField(source="end_date")
     classNames = serializers.CharField(source="status")
+    contacts = serializers.PrimaryKeyRelatedField(
+        source="contact", many=True, read_only=True
+    )
+    contact_name = serializers.StringRelatedField(source="contact", many=True)
 
     class Meta:
         model = Appointment
@@ -20,6 +24,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "end",
             "classNames",
             "description",
+            "contacts",
+            "contact_name",
         ]
 
 
@@ -42,7 +48,9 @@ class AppointmentCardSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    appointments = AppointmentSerializer(source="appointment_set", many=True, read_only=True)
+    appointments = AppointmentSerializer(
+        source="appointment_set", many=True, read_only=True
+    )
 
     class Meta:
         model = Project

@@ -27,8 +27,8 @@ class ProjectAdmin(admin.ModelAdmin):
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = [
         "id",
-        "project",
         "name",
+        "project",
         "start_date",
         "end_date",
         "description",
