@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from userauth.models import Profile
 
@@ -54,6 +53,10 @@ class AppointmentCard(models.Model):
         return self.name
 
 
+def file_upload_name(instance, filename):
+    return "/".join([instance.appointment.name, filename])
+
+
 class AppointmentFile(models.Model):
     appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
-    file = models.FileField(upload_to=settings.MEDIA_ROOT)
+    file = models.FileField(upload_to=file_upload_name)

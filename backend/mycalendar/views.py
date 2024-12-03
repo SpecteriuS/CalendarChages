@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser
 
 from .serializers import *
 from .models import *
@@ -106,6 +107,33 @@ class AppointmentCardViewset(viewsets.ViewSet):
 
     def list(self, request):
         queryset = AppointmentCard.objects.all()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = self.queryset.get(pk=pk)
+        serializer = self.serializer_class(queryset)
+        return Response(serializer.data)
+
+
+class AppointmentFileViewset(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]
+    queryset = AppointmentFile.objects.all()
+    serializer_class = AppointmentFileSerializer
+    parser_classes = [
+        MultiPartParser,
+    ]
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=400)
+
+    def list(self, request):
+        queryset = AppointmentFile.objects.all()
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 

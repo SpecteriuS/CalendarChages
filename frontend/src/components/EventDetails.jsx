@@ -9,8 +9,17 @@ import ProfileModal from './utils/ProfileModal';
 import MyModal from './utils/Modal'
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import axios from 'axios'
+
 
 const EventDetails = () => {
+    const myBaseUrl = 'http://127.0.0.1:8000/';
+
 
     const [formData, setFormData] = useState({
         title: '',
@@ -82,11 +91,38 @@ const EventDetails = () => {
     }
 
     const DeleteData = () => {
-        AxiosInstance.delete(`appointment/${MyId}/`).then((res) => {
+        AxiosInstance.delete(`appointment/${MyId}/`).then(() => {
             window.location.replace("/calendar");
         })
-
     }
+
+    const fileUpload = (file) => {
+        axios.create({
+            baseURL: myBaseUrl,
+            timeout: 5000,
+            headers: {
+                "Content-Type": "multipart/form-data",
+                accept: "application/json"
+            }
+        }).post(`appointment_file/`, {
+            appointment: MyId,
+            filename: file,
+        }).then(() => {
+            window.location.reload();
+        })
+    }
+
+    const VisuallyHiddenInput = styled('input')({
+        clip: 'rect(0 0 0 0)',
+        clipPath: 'inset(50%)',
+        height: 1,
+        overflow: 'hidden',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        whiteSpace: 'nowrap',
+        width: 1,
+    });
 
     useEffect(() => {
         GetData();
@@ -141,6 +177,38 @@ const EventDetails = () => {
                                         setOpenProfile(true);
                                     }} />
                             ))}
+                        </Stack>
+                    </Box>
+
+                    <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
+                        <Box sx={{ fontWeight: 'bold', marginTop: "5px" }}>Files: </Box>
+                        <Stack marginLeft="5px" direction="row" spacing={1} useFlexGap>
+                            {events.files.map((file) => (
+                                <Chip icon={<AttachFileIcon />} label={file.filename.split("/")[3]} variant="outlined"
+                                    onClick={() => {
+                                        window.location.replace(myBaseUrl + file.filename);
+                                    }} />
+                            ))}
+                            {/* <Chip icon={<AddCircleOutlineIcon />} label="Add" /> */}
+                            <Button
+                                component="label"
+                                role={undefined}
+                                variant="contained"
+                                tabIndex={-1}
+                                startIcon={<CloudUploadIcon />}
+                            >
+                                Upload files
+                                <VisuallyHiddenInput
+                                    type="file"
+                                    onChange={(event) => {
+                                        Array.prototype.slice.call(event.target.files).map((file) => {
+                                            console.log(file);
+                                            fileUpload(file);
+                                        })
+                                    }}
+                                    multiple
+                                />
+                            </Button>
                         </Stack>
 
                     </Box>

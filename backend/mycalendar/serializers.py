@@ -1,6 +1,14 @@
 from rest_framework import serializers
 
-from .models import Direction, Project, Appointment, AppointmentCard
+from .models import Direction, Project, Appointment, AppointmentCard, AppointmentFile
+
+
+class AppointmentFileSerializer(serializers.ModelSerializer):
+    filename = serializers.FileField(source="file")
+
+    class Meta:
+        model = AppointmentFile
+        fields = ["id", "appointment", "filename"]
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -13,6 +21,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
         source="contact", many=True, read_only=True
     )
     contact_name = serializers.StringRelatedField(source="contact", many=True)
+    files = AppointmentFileSerializer(
+        source="appointmentfile_set", many=True, read_only=True
+    )
 
     class Meta:
         model = Appointment
@@ -26,6 +37,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "description",
             "contacts",
             "contact_name",
+            "files",
         ]
 
 
