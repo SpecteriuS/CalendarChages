@@ -20,7 +20,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
     contacts = serializers.PrimaryKeyRelatedField(
         source="contact", many=True, read_only=True
     )
-    contact_name = serializers.StringRelatedField(source="contact", many=True)
+    contact_name = serializers.SlugRelatedField(slug_field="contact", many=True, read_only=True)
     files = AppointmentFileSerializer(
         source="appointmentfile_set", many=True, read_only=True
     )

@@ -35,7 +35,8 @@ export default function MyModal({ open, handleClose, myDate, formData, handleCha
         start: StartDate,
         end: EndDate,
         description: formData.description,
-        project: formData.project
+        project: formData.project,
+        contact_name: formData.contact_name
       })
         .then((res) => {
           console.log(res)

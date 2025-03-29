@@ -170,13 +170,14 @@ const EventDetails = () => {
                     <Box sx={{ boxShadow: 3, padding: '20px', display: 'flex', flexDirection: 'row', marginBottom: '20px' }}>
                         <Box sx={{ fontWeight: 'bold', marginTop: "5px" }}>Contact: </Box>
                         <Stack marginLeft="5px" direction="row" spacing={1}>
-                            {events.contacts.map((contact, i) => (
+
+                            {events.contacts ? (events.contacts.map((contact, i) => (
                                 <Chip icon={<AccessibleIcon />} label={events.contact_name[i]} variant="outlined"
                                     onClick={() => {
                                         GetProfile(contact);
                                         setOpenProfile(true);
                                     }} />
-                            ))}
+                            ))) : <></>}
                         </Stack>
                     </Box>
 
